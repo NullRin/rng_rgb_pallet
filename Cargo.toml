@@ -1,0 +1,6 @@
+[package]
+name = "rng_rgb_pallet"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
