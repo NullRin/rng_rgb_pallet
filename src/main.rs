@@ -62,9 +62,13 @@ async fn palette(pallet: Pallet) -> Result<NamedFile, NotFound<String>> {
     NamedFile::open(&path).await.map_err(|e| NotFound(e.to_string()))
 }
 
+#[get("/palette_chooser")]
+async fn palette_chooser() -> Result<NamedFile, NotFound<String>> {
+    NamedFile::open("palette_chooser.html").await.map_err(|e| NotFound(e.to_string()))
+}
 
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![palette])
+    rocket::build().mount("/", routes![palette, palette_chooser])
 }

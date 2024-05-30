@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="color-scheme" content="light dark">
+    </head>
+
+    <body>
+        <form id="pallet_form">
+            <label for="pallet_count">Pallet Count:</label><br>
+            <input type="number"  id="pallet_count" name="pallet_count" value="5" min="1" max="10"><br>
+            <label for="pallet_size">Pallet Size:</label><br>
+            <input type="number"  id="pallet_size" name="pallet_size" value="128" min="1" max="1080"><br>
+            <label for="max_brightness">Max Brightness:</label><br>
+            <input type="number"  id="max_brightness" name="max_brightness" value="255" min="1" max="255"><br>
+            <label for="min_brightness">Min Brightness:</label><br>
+            <input type="number"  id="min_brightness" name="min_brightness" value="0" min="0" max="254"><br>
+            <input type="submit" value="Submit">
+        </form>
+        <br>
+        <br>
+        <div id="palette_container"></div>
+    </body>
+
+    <script>
+        function formSubmit(event) {
+            let url = "/palette";
+            let request = new XMLHttpRequest();
+            let formData = new FormData(event.target);
+            let queryString = new URLSearchParams(formData).toString();
+            request.open('GET', url + '?' + queryString, true);
+            request.responseType = 'blob';
+            request.onload = function() { 
+                if (request.status === 200) {
+                    let blob = new Blob([request.response], { type: request.getResponseHeader('Content-Type') });
+                    let fileURL = window.URL.createObjectURL(blob);
+
+                    let fileContainer = document.getElementById('palette_container');
+                    fileContainer.innerHTML = ''; // Clear previous content
+
+                    let img = document.createElement('img');
+                    img.src = fileURL;
+                    fileContainer.appendChild(img);
+                } else {
+                    alert(`Error: ${request.status} ${request.statusText}`);
+                }
+            };
+            request.onerror = function() {
+                alert(request.responseText);
+            };
+            request.send(new FormData(event.target)); // create FormData from form that triggered event
+            event.preventDefault();
+        };
+        document.getElementById('pallet_form').addEventListener('submit', formSubmit);
+    </script>
+</html>
